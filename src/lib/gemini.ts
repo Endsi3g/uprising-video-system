@@ -40,7 +40,7 @@ ${params.transcription}
 
 ${params.avoidRepetition?.length ? `ÉVITER ces angles déjà utilisés : ${params.avoidRepetition.join(', ')}` : ''}
 
-Réponds au format JSON :
+Réponds UNIQUEMENT au format JSON brut :
 {
   "hook": "...",
   "body": "...",
@@ -50,7 +50,15 @@ Réponds au format JSON :
   "suggestedTitle": "..."
 }`;
   const result = await model.generateContent(prompt);
-  return JSON.parse(result.response.text().replace(/```json\n?|\n?```/g, ''));
+  const text = result.response.text();
+  try {
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    const jsonStr = jsonMatch ? jsonMatch[0] : text;
+    return JSON.parse(jsonStr.replace(/```json\n?|\n?```/g, ''));
+  } catch (e) {
+    console.error('Failed to parse Gemini response:', text);
+    throw new Error('Invalid AI response format');
+  }
 }
 
 export async function predictVirality(script: { hook: string; body: string; cta: string }) {
@@ -63,7 +71,15 @@ CTA: ${script.cta}
 
 Réponds JSON: { "score": N, "factors": ["..."], "improvements": ["..."] }`;
   const result = await model.generateContent(prompt);
-  return JSON.parse(result.response.text().replace(/```json\n?|\n?```/g, ''));
+  const text = result.response.text();
+  try {
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    const jsonStr = jsonMatch ? jsonMatch[0] : text;
+    return JSON.parse(jsonStr.replace(/```json\n?|\n?```/g, ''));
+  } catch (e) {
+    console.error('Failed to parse Gemini response:', text);
+    throw new Error('Invalid AI response format');
+  }
 }
 
 export async function generateFeedback(analytics: { views: number; ctr: number; engagement: number; watchTime: number }[]) {
@@ -74,5 +90,13 @@ ${JSON.stringify(analytics)}
 
 Réponds JSON: [{ "type": "recommendation"|"alert"|"insight", "severity": "low"|"medium"|"high", "title": "...", "message": "...", "actionSuggestion": "..." }]`;
   const result = await model.generateContent(prompt);
-  return JSON.parse(result.response.text().replace(/```json\n?|\n?```/g, ''));
+  const text = result.response.text();
+  try {
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    const jsonStr = jsonMatch ? jsonMatch[0] : text;
+    return JSON.parse(jsonStr.replace(/```json\n?|\n?```/g, ''));
+  } catch (e) {
+    console.error('Failed to parse Gemini response:', text);
+    throw new Error('Invalid AI response format');
+  }
 }
