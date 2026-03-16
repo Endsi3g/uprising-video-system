@@ -1,7 +1,7 @@
 # Next Steps
 
-1. **Backend Integration**: Set up API routes to communicate with local or remote agents.
-2. **AI Logic**: Integrate `@google/generative-ai` into the script editor workflow.
-3. **Database Schema**: Implement Supabase migrations for videos, scripts, and analytic tables.
-4. **UI Refinement**: Continue building out the dashboard and library pages with mock data.
-5. **CI/CD Triggers**: Enhance GitHub Actions specific to frontend and backend separated tests.
+1. **Authentication & OAuth**: Set up Auth (e.g. Supabase Auth) to manage user sessions and securely store OAuth tokens for Google (Drive, YouTube) and Instagram.
+2. **Backend API Integration**: Replace the `TODO` stubs in `src/app/api/` routes by wiring them up with the completed service libraries (`lib/youtube.ts`, `lib/gemini.ts`, `lib/instagram.ts`, etc.).
+3. **Database Connection**: Connect the frontend to the actual Supabase instance, run the initial migration (`supabase/migrations/001_initial.sql`), and verify data fetching.
+4. **Opus Clip & Workflows**: Finalize the background polling or webhook mechanism for Opus Clip processing status.
+5. **Real Data Testing**: Ingest a real YouTube video and run it through the Gemini script generation pipeline to validate prompt quality and the REGAIN framework logic.
