@@ -1,3 +1,5 @@
+param([string]$videoId)
+
 $baseUrl = "http://localhost:3000/api"
 
 function Test-Endpoint {
@@ -36,13 +38,12 @@ Test-Endpoint -method "POST" -path "/ingest/youtube" -body @{
 # }
 
 # 3. Test Script Generation (Requires a valid videoId from previous step)
-Write-Host "To test script generation, copy a video ID from the YouTube ingestion output and run:" -ForegroundColor Yellow
-Write-Host ".\test-api.ps1 -videoId 'YOUR-UUID'" -ForegroundColor Yellow
-
-param([string]$videoId)
 if ($videoId) {
     Test-Endpoint -method "POST" -path "/ai/generate-script" -body @{
         videoId = $videoId
         template = "viral_reel"
     }
+} else {
+    Write-Host "To test script generation, copy a video ID from the YouTube ingestion output and run:" -ForegroundColor Yellow
+    Write-Host ".\test-api.ps1 -videoId 'YOUR-UUID'" -ForegroundColor Yellow
 }
